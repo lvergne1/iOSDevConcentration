@@ -14,7 +14,7 @@ class Concentration
     
     var indexOfOneAndOnlyFaceUpCard: Int?
     var flipCount = 0
-    
+    var score = 0
     func chooseCard(at index: Int){
         if !cards[index].isMatched{
             flipCount += 1
@@ -22,9 +22,19 @@ class Concentration
                 if cards[matchIndex].identifier == cards[index].identifier{
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
+                    score += 2
+                }else{
+                    if cards[matchIndex].wasPreviouslyShown{
+                        score -= 1
+                    }
+                    if cards[index].wasPreviouslyShown{
+                        score -= 1
+                    }
                 }
                 cards[index].isFaceUp = true
                 indexOfOneAndOnlyFaceUpCard = nil
+                cards[index].wasPreviouslyShown = true
+                cards[matchIndex].wasPreviouslyShown = true
             } else {
                 //either no cards or 2 cards are faceUp
                 for flipDownIndex in cards.indices{
@@ -42,11 +52,11 @@ class Concentration
             cards += [card, card]
         }
         //TODO: shuffle the cards
-        for index in 0..<cards.count{
-            let cardCopyToBeOverwritten = cards[index]
-            let swapIndex = Int(arc4random_uniform(UInt32(cards.count)))
-            cards[index] = cards[swapIndex]
-            cards[swapIndex] = cardCopyToBeOverwritten
+        for indexOfFirstCard in 0..<cards.count{
+            let copyOfFirstCard = cards[indexOfFirstCard]
+            let indexOfSecondCard = Int(arc4random_uniform(UInt32(cards.count)))
+            cards[indexOfFirstCard] = cards[indexOfSecondCard]
+            cards[indexOfSecondCard] = copyOfFirstCard
         }
     }
 }

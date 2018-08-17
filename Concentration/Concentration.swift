@@ -12,9 +12,30 @@ struct Concentration
 {
     var cards = [Card]()
     
-    var indexOfOneAndOnlyFaceUpCard: Int?
-    var flipCount = 0
-    var score = 0
+    private var indexOfOneAndOnlyFaceUpCard: Int? {
+        get{
+            var foundIndex: Int?
+            for index in cards.indices{
+                if cards[index].isFaceUp{
+                    if foundIndex == nil{
+                        foundIndex = index
+                    } else {
+                        return nil
+                    }
+                }
+            }
+            return foundIndex
+        }
+        set {
+            for index in cards.indices{
+                cards[index].isFaceUp = (index == newValue)
+            }
+        }
+    }
+    private(set) var flipCount = 0
+    
+    private(set) var score = 0
+    
     mutating func chooseCard(at index: Int){
         if !cards[index].isMatched{
             flipCount += 1
@@ -32,7 +53,6 @@ struct Concentration
                     }
                 }
                 cards[index].isFaceUp = true
-                indexOfOneAndOnlyFaceUpCard = nil
                 cards[index].wasPreviouslyShown = true
                 cards[matchIndex].wasPreviouslyShown = true
             } else {
@@ -41,7 +61,6 @@ struct Concentration
                     cards[flipDownIndex].isFaceUp = false
                 }
                 cards[index].isFaceUp = true
-                indexOfOneAndOnlyFaceUpCard = index
             }
         }
     }
@@ -58,5 +77,10 @@ struct Concentration
             cards[indexOfFirstCard] = cards[indexOfSecondCard]
             cards[indexOfSecondCard] = copyOfFirstCard
         }
+    }
+    
+    init(numberOfPairsOfCards: Int, score: Int){
+        self.init(numberOfPairsOfCards: numberOfPairsOfCards)
+        self.score = score
     }
 }

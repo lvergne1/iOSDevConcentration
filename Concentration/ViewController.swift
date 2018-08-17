@@ -10,24 +10,28 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    lazy var game = configureNewGame()
+    private lazy var game = configureNewGame()
     
-    @IBOutlet var cardButtons: [UIButton]!
+    var numberOfPairsOfCards : Int {
+        return (cardButtons.count + 1) / 2
+    }
     
-    @IBOutlet weak var flipCountLabel: UILabel!
+    @IBOutlet private var cardButtons: [UIButton]!
     
-    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet private weak var flipCountLabel: UILabel!
     
-    @IBOutlet weak var newGameButton: UIButton!
+    @IBOutlet private weak var scoreLabel: UILabel!
     
-    @IBAction func touchCard(_ sender: UIButton) {
+    @IBOutlet private weak var newGameButton: UIButton!
+    
+    @IBAction private func touchCard(_ sender: UIButton) {
         if let cardNumber = cardButtons.index(of: sender){
             game.chooseCard(at: cardNumber)
             updateViewFromModel()
         }
     }
     
-    func configureNewGame() -> Concentration{
+    private func configureNewGame() -> Concentration{
         currentTheme = themeChoices[Int(arc4random_uniform(UInt32(themeChoices.count)))]
         emojiChoices = currentTheme.emojiChoices
         self.view.backgroundColor = currentTheme.backgroundColor
@@ -35,15 +39,15 @@ class ViewController: UIViewController {
         newGameButton.setTitleColor(currentTheme.backgroundColor, for: UIControlState.normal)
         scoreLabel.textColor = currentTheme.colorOnBackOfCard
         flipCountLabel.textColor = currentTheme.colorOnBackOfCard
-        game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
+        game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
         updateViewFromModel()
         return game
     }
     
-    @IBAction func touchNewGameButton(_ sender: UIButton) {
+    @IBAction private func touchNewGameButton(_ sender: UIButton) {
         game = configureNewGame()
     }
-    func updateViewFromModel(){
+    private func updateViewFromModel(){
         flipCountLabel.text = "Flips: \(game.flipCount)"
         scoreLabel.text = "Score: \(game.score)"
         for index in cardButtons.indices{
@@ -58,14 +62,14 @@ class ViewController: UIViewController {
         }
     }
     
-    var themeChoices = [Theme(emojiChoices: ["👻","😈","🎃","😱","💀","🧟‍♂️","🍎","🌕","🦇","🍭"], backgroundColor : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)), Theme(emojiChoices: ["🤶","🎄","🎅","🎁","😇","👼","⭐️","☃️"], backgroundColor : #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), Theme(emojiChoices: ["😀","😅","😂","🙂","🧐","🤓","☹️","😖","🤬","😨","😤"], backgroundColor: #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1), colorOnBackOfCard: #colorLiteral(red: 0.9994240403, green: 0.9855536819, blue: 0, alpha: 1))]
+    private var themeChoices = [Theme(emojiChoices: ["👻","😈","🎃","😱","💀","🧟‍♂️","🍎","🌕","🦇","🍭"], backgroundColor : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)), Theme(emojiChoices: ["🤶","🎄","🎅","🎁","😇","👼","⭐️","☃️"], backgroundColor : #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), Theme(emojiChoices: ["😀","😅","😂","🙂","🧐","🤓","☹️","😖","🤬","😨","😤"], backgroundColor: #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1), colorOnBackOfCard: #colorLiteral(red: 0.9994240403, green: 0.9855536819, blue: 0, alpha: 1))]
     
     
-    lazy var currentTheme = themeChoices[Int(arc4random_uniform(UInt32(themeChoices.count)))]
-    lazy var emojiChoices = currentTheme.emojiChoices
-    var emoji = [Int: String]()
+    private lazy var currentTheme = themeChoices[Int(arc4random_uniform(UInt32(themeChoices.count)))]
+    private lazy var emojiChoices = currentTheme.emojiChoices
+    private var emoji = [Int: String]()
     
-    func emoji(for card: Card) -> String{
+    private func emoji(for card: Card) -> String{
         if emoji[card.identifier] == nil, emojiChoices.count > 0{
             let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
             emoji[card.identifier] = emojiChoices.remove(at: randomIndex)

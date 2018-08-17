@@ -32,7 +32,7 @@ class ViewController: UIViewController {
     }
     
     private func configureNewGame() -> Concentration{
-        currentTheme = themeChoices[Int(arc4random_uniform(UInt32(themeChoices.count)))]
+        currentTheme = themeChoices[themeChoices.count.arc4random]
         emojiChoices = currentTheme.emojiChoices
         self.view.backgroundColor = currentTheme.backgroundColor
         newGameButton.backgroundColor = currentTheme.colorOnBackOfCard
@@ -65,16 +65,23 @@ class ViewController: UIViewController {
     private var themeChoices = [Theme(emojiChoices: ["👻","😈","🎃","😱","💀","🧟‍♂️","🍎","🌕","🦇","🍭"], backgroundColor : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)), Theme(emojiChoices: ["🤶","🎄","🎅","🎁","😇","👼","⭐️","☃️"], backgroundColor : #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), Theme(emojiChoices: ["😀","😅","😂","🙂","🧐","🤓","☹️","😖","🤬","😨","😤"], backgroundColor: #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1), colorOnBackOfCard: #colorLiteral(red: 0.9994240403, green: 0.9855536819, blue: 0, alpha: 1))]
     
     
-    private lazy var currentTheme = themeChoices[Int(arc4random_uniform(UInt32(themeChoices.count)))]
+    private lazy var currentTheme = themeChoices[themeChoices.count.arc4random]
     private lazy var emojiChoices = currentTheme.emojiChoices
     private var emoji = [Int: String]()
     
     private func emoji(for card: Card) -> String{
         if emoji[card.identifier] == nil, emojiChoices.count > 0{
-            let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
+            let randomIndex = emojiChoices.count.arc4random
             emoji[card.identifier] = emojiChoices.remove(at: randomIndex)
         }
        return emoji[card.identifier] ?? "?"
     }
 }
+
+extension Int{
+    var arc4random : Int{
+        return Int(arc4random_uniform(UInt32(self)))
+    }
+}
+
 

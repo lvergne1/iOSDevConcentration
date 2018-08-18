@@ -12,19 +12,13 @@ struct Concentration
 {
     var cards = [Card]()
     
+    private(set) var flipCount = 0
+    
+    private(set) var score = 0
+    
     private var indexOfOneAndOnlyFaceUpCard: Int? {
         get{
-            var foundIndex: Int?
-            for index in cards.indices{
-                if cards[index].isFaceUp{
-                    if foundIndex == nil{
-                        foundIndex = index
-                    } else {
-                        return nil
-                    }
-                }
-            }
-            return foundIndex
+            return cards.indices.filter { cards[$0].isFaceUp }.oneAndOnly
         }
         set {
             for index in cards.indices{
@@ -32,9 +26,6 @@ struct Concentration
             }
         }
     }
-    private(set) var flipCount = 0
-    
-    private(set) var score = 0
     
     mutating func chooseCard(at index: Int){
         if !cards[index].isMatched{
@@ -65,12 +56,7 @@ struct Concentration
         }
     }
     
-    init(numberOfPairsOfCards: Int){
-        for _ in 1...numberOfPairsOfCards{
-            let card = Card()
-            cards += [card, card]
-        }
-        //TODO: shuffle the cards
+    mutating func shuffleCards(){
         for indexOfFirstCard in 0..<cards.count{
             let copyOfFirstCard = cards[indexOfFirstCard]
             let indexOfSecondCard = Int(arc4random_uniform(UInt32(cards.count)))
@@ -79,9 +65,31 @@ struct Concentration
         }
     }
     
-    init(numberOfPairsOfCards: Int, score: Int){
-        self.init(numberOfPairsOfCards: numberOfPairsOfCards)
-        self.score = score
+    mutating func newGame(){
+        for index in cards.indices{
+            cards[index].isFaceUp = false
+            cards[index].isMatched = false
+            cards[index].wasPreviouslyShown = false
+        }
+        indexOfOneAndOnlyFaceUpCard = nil
+        shuffleCards()
+        score = 0
+        flipCount = 0
+    }
+    
+    init(numberOfPairsOfCards: Int){
+        for _ in 1...numberOfPairsOfCards{
+            let card = Card()
+            cards += [card, card]
+            print("cardCount: \(cards.count)")
+        }
+        shuffleCards()
+    }
+}
+
+extension Collection{
+    var oneAndOnly: Element? {
+        return count == 1 ? first : nil
     }
 }
 

@@ -10,8 +10,12 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    private lazy var game = configureNewGame()
+    private lazy var game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        chooseNewTheme()
+    }
     var numberOfPairsOfCards : Int {
         return (cardButtons.count + 1) / 2
     }
@@ -31,22 +35,23 @@ class ViewController: UIViewController {
         }
     }
     
-    private func configureNewGame() -> Concentration{
+    private func chooseNewTheme(){
         currentTheme = themeChoices[themeChoices.count.arc4random]
         emojiChoices = currentTheme.emojiChoices
+        emoji = [:]
         self.view.backgroundColor = currentTheme.backgroundColor
         newGameButton.backgroundColor = currentTheme.colorOnBackOfCard
         newGameButton.setTitleColor(currentTheme.backgroundColor, for: UIControlState.normal)
         scoreLabel.textColor = currentTheme.colorOnBackOfCard
         flipCountLabel.textColor = currentTheme.colorOnBackOfCard
-        game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
         updateViewFromModel()
-        return game
     }
     
     @IBAction private func touchNewGameButton(_ sender: UIButton) {
-        game = configureNewGame()
+        game.newGame()
+        chooseNewTheme()
     }
+    
     private func updateViewFromModel(){
         flipCountLabel.text = "Flips: \(game.flipCount)"
         scoreLabel.text = "Score: \(game.score)"
@@ -62,7 +67,11 @@ class ViewController: UIViewController {
         }
     }
     
-    private var themeChoices = [Theme(emojiChoices: ["👻","😈","🎃","😱","💀","🧟‍♂️","🍎","🌕","🦇","🍭"], backgroundColor : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)), Theme(emojiChoices: ["🤶","🎄","🎅","🎁","😇","👼","⭐️","☃️"], backgroundColor : #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)), Theme(emojiChoices: ["😀","😅","😂","🙂","🧐","🤓","☹️","😖","🤬","😨","😤"], backgroundColor: #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1), colorOnBackOfCard: #colorLiteral(red: 0.9994240403, green: 0.9855536819, blue: 0, alpha: 1))]
+    private var themeChoices = [
+        Theme(emojiChoices: ["👻","😈","🎃","😱","💀","🧟‍♂️","🍎","🌕","🦇","🍭"], backgroundColor : #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)),
+        Theme(emojiChoices: ["🤶","🎄","🎅","🎁","😇","👼","⭐️","☃️"], backgroundColor : #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1), colorOnBackOfCard : #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)),
+        Theme(emojiChoices: ["😀","😅","😂","🙂","🧐","🤓","☹️","😖","🤬","😨","😤"], backgroundColor: #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1), colorOnBackOfCard: #colorLiteral(red: 0.9994240403, green: 0.9855536819, blue: 0, alpha: 1))
+    ]
     
     
     private lazy var currentTheme = themeChoices[themeChoices.count.arc4random]

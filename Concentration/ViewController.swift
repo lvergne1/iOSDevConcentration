@@ -9,7 +9,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     private lazy var game = Concentration(numberOfPairsOfCards: numberOfPairsOfCards)
     
     override func viewDidLoad() {
@@ -48,11 +48,19 @@ class ViewController: UIViewController {
     }
     
     @IBAction private func touchNewGameButton(_ sender: UIButton) {
-        game.newGame()
+        if sender.currentTitle == "Next Level"{
+            game.nextLevel()
+            sender.setTitle("New Game", for: UIControlState.normal)
+        }else {
+            game.newGame()
+        }
         chooseNewTheme()
     }
     
     private func updateViewFromModel(){
+        if game.allCardsAreMatched{
+            newGameButton.setTitle("Next Level", for: UIControlState.normal)
+        }
         flipCountLabel.text = "Flips: \(game.flipCount)"
         scoreLabel.text = "Score: \(game.score)"
         for index in cardButtons.indices{
@@ -63,7 +71,8 @@ class ViewController: UIViewController {
                 button.backgroundColor = #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 1)
             } else{
                 button.setTitle("", for: UIControlState.normal)
-                button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : currentTheme.colorOnBackOfCard            }
+                button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : currentTheme.colorOnBackOfCard
+            }
         }
     }
     
@@ -84,7 +93,7 @@ class ViewController: UIViewController {
             let randomIndex = emojiChoices.count.arc4random
             emoji[card] = emojiChoices.remove(at: randomIndex)
         }
-       return emoji[card] ?? "?"
+        return emoji[card] ?? "?"
     }
 }
 

@@ -12,6 +12,10 @@ struct Concentration
 {
     var cards = [Card]()
     
+    var allCardsAreMatched : Bool {
+        return cards.indices.filter{!cards[$0].isMatched}.count == 0
+    }
+    
     private(set) var flipCount = 0
     
     private(set) var score = 0
@@ -64,8 +68,7 @@ struct Concentration
             cards[indexOfSecondCard] = copyOfFirstCard
         }
     }
-    
-    mutating func newGame(){
+    mutating func nextLevel(){
         for index in cards.indices{
             cards[index].isFaceUp = false
             cards[index].isMatched = false
@@ -73,20 +76,22 @@ struct Concentration
         }
         indexOfOneAndOnlyFaceUpCard = nil
         shuffleCards()
-        score = 0
         flipCount = 0
+    }
+    mutating func newGame(){
+        score = 0
+        nextLevel()
     }
     
     init(numberOfPairsOfCards: Int){
         for _ in 1...numberOfPairsOfCards{
             let card = Card()
             cards += [card, card]
-            print("cardCount: \(cards.count)")
         }
         shuffleCards()
     }
 }
-
+//TODO: Timer Score Bonus
 extension Collection{
     var oneAndOnly: Element? {
         return count == 1 ? first : nil
